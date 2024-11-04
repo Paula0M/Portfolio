@@ -21,30 +21,25 @@ const LandingSection = () => {
   const {isLoading, response, submit} = useSubmit();
   const { onOpen } = useAlertContext();
 
+  
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      email: "",
-      type: "hireMe",
-      comment: "",
+      firstName: '',
+      email: '',
+      type: '',
+      comment: '',
     },
     onSubmit: async (values) => {
-      const res = await submit(values);
-      if (res) {
-        onOpen(res.type, res.message);
-      }
+      // Realizar la llamada a la API usando submit
+      await submit(values);
+      // Manejar la respuesta, como abrir la alerta
+      onOpen();
     },
     validationSchema: Yup.object({
-      firstName: Yup.string()
-        .min(2, "El nombre debe tener al menos 2 caracteres")
-        .required("El nombre es obligatorio"),
-      email: Yup.string()
-        .email("Debe ser un correo electrónico válido")
-        .required("El correo es obligatorio"),
-      type: Yup.string().required("Seleccione un tipo de consulta"),
-      comment: Yup.string()
-        .min(10, "El comentario debe tener al menos 10 caracteres")
-        .required("El comentario es obligatorio"),
+      firstName: Yup.string().required("Required"),
+      email: Yup.string().email("Invalid email format").required("Required"),
+      type: Yup.string().required("Required"),
+      comment: Yup.string().required("Required"),
     }),
   });
 
@@ -117,7 +112,7 @@ const LandingSection = () => {
                   <FormErrorMessage>{formik.errors.comment}</FormErrorMessage>
                 ) : null}
               </FormControl>
-              
+
               <Button type="submit" colorScheme="purple" width="full" isLoading={isLoading}>
                 Submit
               </Button>
