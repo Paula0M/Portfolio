@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -33,16 +33,29 @@ const socials = [
 ];
 
 const Header = () => {
-  const handleClick = (anchor) => () => {
-    const id = `${anchor}-section`;
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  };
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY.current) {
+        // Desplazándose hacia abajo
+        setShowHeader(false);
+      } else {
+        // Desplazándose hacia arriba
+        setShowHeader(true);
+      }
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    // Limpieza del event listener cuando el componente se desmonta
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
     <Box
@@ -50,11 +63,12 @@ const Header = () => {
       top={0}
       left={0}
       right={0}
-      translateY={0}
+      transform={showHeader ? 'translateY(0)' : 'translateY(-200px)'}
       transitionProperty="transform"
       transitionDuration=".3s"
       transitionTimingFunction="ease-in-out"
       backgroundColor="#18181b"
+      zIndex={1000}
     >
       <Box color="white" maxWidth="1280px" margin="0 auto">
         <HStack
@@ -64,7 +78,7 @@ const Header = () => {
           alignItems="center"
         >
           <nav>
-          <HStack spacing={4}>
+            <HStack spacing={4}>
               {socials.map((social, index) => (
                 <a key={index} href={social.url} target="_blank" rel="noopener noreferrer">
                   <FontAwesomeIcon icon={social.icon} size="2x" />
@@ -83,4 +97,16 @@ const Header = () => {
     </Box>
   );
 };
+
+const handleClick = (anchor) => () => {
+  const id = `${anchor}-section`;
+  const element = document.getElementById(id);
+  if (element) {
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+};
+
 export default Header;
