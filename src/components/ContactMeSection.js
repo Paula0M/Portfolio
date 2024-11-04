@@ -43,6 +43,17 @@ const LandingSection = () => {
     }),
   });
 
+  useEffect(() => {
+    if (response) {
+      if (response.type === 'success') {
+        onOpen(`${formik.values.firstName}, your message has been sent successfully!`);
+        formik.resetForm();
+      } else if (response.type === 'error') {
+        onOpen(`Error: ${response.message}`);
+      }
+    }
+  }, [response, onOpen, formik]);
+
   return (
     <FullScreenSection
       isDarkBackground
