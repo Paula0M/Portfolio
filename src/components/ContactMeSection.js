@@ -22,9 +22,30 @@ const LandingSection = () => {
   const { onOpen } = useAlertContext();
 
   const formik = useFormik({
-    initialValues: {},
-    onSubmit: (values) => {},
-    validationSchema: Yup.object({}),
+    initialValues: {
+      firstName: "",
+      email: "",
+      type: "hireMe",
+      comment: "",
+    },
+    onSubmit: async (values) => {
+      const res = await submit(values);
+      if (res) {
+        onOpen(res.type, res.message);
+      }
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string()
+        .min(2, "El nombre debe tener al menos 2 caracteres")
+        .required("El nombre es obligatorio"),
+      email: Yup.string()
+        .email("Debe ser un correo electrónico válido")
+        .required("El correo es obligatorio"),
+      type: Yup.string().required("Seleccione un tipo de consulta"),
+      comment: Yup.string()
+        .min(10, "El comentario debe tener al menos 10 caracteres")
+        .required("El comentario es obligatorio"),
+    }),
   });
 
   return (
@@ -40,7 +61,7 @@ const LandingSection = () => {
         </Heading>
         <Box p={6} rounded="md" w="100%">
           <form>
-            <VStack spacing={4}>
+            <VStack spacing={4}>  n   gbm-
               <FormControl isInvalid={false}>
                 <FormLabel htmlFor="firstName">Name</FormLabel>
                 <Input
