@@ -47,8 +47,10 @@ const LandingSection = () => {
     if (response) {
       if (response.type === 'success') {
         onOpen(`${formik.values.firstName}, your message has been sent successfully!`);
+      
         formik.resetForm();
       } else if (response.type === 'error') {
+        // Show error alert
         onOpen(`Error: ${response.message}`);
       }
     }
