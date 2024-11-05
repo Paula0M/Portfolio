@@ -29,11 +29,8 @@ const LandingSection = () => {
       type: '',
       comment: '',
     },
-    onSubmit: async (values) => {
-      // Realizar la llamada a la API usando submit
-      await submit(values);
-      // Manejar la respuesta, como abrir la alerta
-      onOpen();
+    onSubmit: (values, { resetForm }) => {
+      submit(values);
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("Required"),
@@ -45,13 +42,12 @@ const LandingSection = () => {
 
   useEffect(() => {
     if (response) {
+      console.log('Response:', response);
       if (response.type === 'success') {
-        onOpen(`${formik.values.firstName}, your message has been sent successfully!`);
-      
-        formik.resetForm();
+        onOpen('success', `Thank you, ${formik.values.firstName}. Your message has been sent!`);
+        formik.resetForm(); 
       } else if (response.type === 'error') {
-        // Show error alert
-        onOpen(`Error: ${response.message}`);
+        onOpen('error', response.message || 'An error occurred. Please try again.');
       }
     }
   }, [response, onOpen, formik]);
